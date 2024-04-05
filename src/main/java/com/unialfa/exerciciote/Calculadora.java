@@ -75,6 +75,9 @@ public class Calculadora extends JFrame{
         }
         var total = valor1 + valor2;
         JOptionPane.showMessageDialog(this, "Resultado: " + total);
+    }
+
+    private void salvar(String valor){
 
     }
 
