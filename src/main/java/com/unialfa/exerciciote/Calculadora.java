@@ -15,7 +15,6 @@ public class Calculadora extends JFrame{
     private Boolean falha = Boolean.FALSE;
 
     public Calculadora(){
-        System.out.println('a');
         setTitle("Calculadora que só Soma");
         setSize(400, 150);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
