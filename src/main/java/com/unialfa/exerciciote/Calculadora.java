@@ -2,6 +2,9 @@ package com.unialfa.exerciciote;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 public class Calculadora extends JFrame{
     public static final String CAMPO_1 = "Campo 1";
@@ -12,6 +15,7 @@ public class Calculadora extends JFrame{
     private Boolean falha = Boolean.FALSE;
 
     public Calculadora(){
+        System.out.println('a');
         setTitle("Calculadora que só Soma");
         setSize(400, 150);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -75,13 +79,22 @@ public class Calculadora extends JFrame{
         }
         Integer total = valor1 + valor2;
         JOptionPane.showMessageDialog(this, "Resultado: " + total);
+        salvar(total.toString());
 
     }
     private void salvar(String valor){
+        var diretorioProjeto = System.getProperty("user.dir");
+        var nomeArquivo = "\\Calculadora.txt";
+        var arquivo = new File(diretorioProjeto, nomeArquivo);
 
+        try(BufferedWriter writer = new BufferedWriter(
+                new FileWriter(arquivo, true))){
+            writer.newLine();
+            writer.write(valor);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
-
-
 
 
 }
