@@ -73,12 +73,13 @@ public class Calculadora extends JFrame{
             this.falha = Boolean.FALSE;
             return;
         }
-        var total = valor1 + valor2;
+        Integer total = valor1 + valor2;
         JOptionPane.showMessageDialog(this, "Resultado: " + total);
+        salvar(total.toString());
     }
 
     private void salvar(String valor){
-
+        System.out.println(valor);
     }
 
 
