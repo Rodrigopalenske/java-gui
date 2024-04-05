@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Calculadora extends JFrame{
+    public static final String CAMPO_1 = "Campo 1";
+    public static final String CAMPO_2 = "Campo 2";
     private JTextField campoValor1;
     private JTextField campoValor2;
     private JButton botaoSomar;
-
+    private Boolean falha = Boolean.FALSE;
 
     public Calculadora(){
         setTitle("Calculadora que só Soma");
@@ -18,21 +20,20 @@ public class Calculadora extends JFrame{
         var constraints = new GridBagConstraints();
         constraints.insets = new Insets(5,5,5,5);
 
-        var label1 = new JLabel("Label1:");
+        var labelValor1 = new JLabel(CAMPO_1);
         constraints.gridx = 0;
         constraints.gridy = 0;
-        painel.add(label1, constraints);
+        painel.add(labelValor1, constraints);
+
+        var labelValor2 = new JLabel(CAMPO_2);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        painel.add(labelValor2, constraints);
 
         campoValor1 = new JTextField(10);
         constraints.gridx = 0;
         constraints.gridy = 1;
         painel.add(campoValor1, constraints);
-
-
-        var label2 = new JLabel("Label2:");
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        painel.add(label2, constraints);
 
         campoValor2 = new JTextField(10);
         constraints.gridx = 1;
@@ -42,69 +43,42 @@ public class Calculadora extends JFrame{
         botaoSomar = new JButton("Somar");
         botaoSomar.addActionListener(e -> somar());
         constraints.gridx = 2;
-        constraints.gridy = 0;
+        constraints.gridy = 1;
         painel.add(botaoSomar, constraints);
 
         add(painel);
         setLocationRelativeTo(null);
     }
 
-    private void somar() {
-        boolean campo1Valido;
-        boolean campo2Valido;
-        Integer valor1 = 0;
-        Integer valor2 = 0;
-
-        try{
-            valor1 = verificarCampo1();
-            campo1Valido = true;
-        } catch (NullPointerException e){
-            JOptionPane.showMessageDialog(this, "Label1 não for preenchido");
-            campo1Valido = false;
-        } catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Label1 não é um número");
-            campo1Valido = false;
-
-        }
-
+    private Integer converter(String valorStr, String campo) {
         try {
-            valor2 = verificarCampo2();
-            campo2Valido = true;
-        } catch (NullPointerException e){
-            JOptionPane.showMessageDialog(this, "Label2 não for preenchido");
-            campo2Valido = false;
-        } catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Label2 não é um número");
-            campo2Valido = false;
-        }
-        if (campo1Valido && campo2Valido){
-            var total = valor1 + valor2;
-            JOptionPane.showMessageDialog(this, "Resultado: " + total);
+            if (valorStr.isEmpty()) throw new CalculadoraException("O valor do " + campo + " não pode ser vazio");
+            if (valorStr.isBlank()) throw new CalculadoraException("O valor do %s não pode ser espaços".formatted(campo));
+            return Integer.parseInt(valorStr);
+        } catch (NumberFormatException n){
+            this.falha = Boolean.TRUE;
+            JOptionPane.showMessageDialog(this, "O valor do %s não é válido, é necessário ser um número".formatted(campo));
+            return 0;
+        } catch (CalculadoraException e) {
+            this.falha = e.isFalha();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+            return 0;
         }
     }
 
-    private Integer verificarCampo1() throws NumberFormatException, NullPointerException{
-        try{
-            return Integer.parseInt(campoValor1.getText());
-        } catch (Exception e){
-            var valor1 = campoValor1.getText();
-            if(valor1.isEmpty()){
-                throw new NullPointerException();
-            } else {
-                throw new NumberFormatException();
-            }
+    private void somar() {
+        var valor1 = converter(campoValor1.getText(), CAMPO_1);
+        var valor2 = converter(campoValor2.getText(), CAMPO_2);
+        if (this.falha){
+            this.falha = Boolean.FALSE;
+            return;
         }
+        var total = valor1 + valor2;
+        JOptionPane.showMessageDialog(this, "Resultado: " + total);
+
     }
-    private Integer verificarCampo2() throws NumberFormatException, NullPointerException{
-        try{
-            return Integer.parseInt(campoValor2.getText());
-        } catch (Exception e){
-            var valor2 = campoValor2.getText();
-            if(valor2.isEmpty()){
-                throw new NullPointerException();
-            } else {
-                throw new NumberFormatException();
-            }
-        }
-    }
+
+
+
+
 }
